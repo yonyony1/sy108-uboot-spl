@@ -17,11 +17,7 @@ jobs:
       - name: Build SPL and U-Boot via Docker
         run: |
           # 直接调用仓库自带的 Makefile，利用 Docker 容器编译
-          make offline LABEL=offline-sml \
-  SPL_IMAGE=/absolute/path/to/original-spl.bin \
-  SML_IMAGE=/absolute/path/to/original-sml.bin \
-  MAIN_CAPSULE=/absolute/path/to/main/boot.bin \
-  RECOVERY_CAPSULE=/absolute/path/to/recovery/boot.bin
+          make LABEL=dev
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
