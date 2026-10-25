@@ -1,0 +1,37 @@
+name: Build SY108 U-Boot/SPL
+
+on:
+  push:
+    branches: [ main, oem ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build SPL and U-Boot via Docker
+        run: |
+          # 直接调用仓库自带的 Makefile，利用 Docker 容器编译
+          make offline LABEL=offline-sml \
+  SPL_IMAGE=/absolute/path/to/original-spl.bin \
+  SML_IMAGE=/absolute/path/to/original-sml.bin \
+  MAIN_CAPSULE=/absolute/path/to/main/boot.bin \
+  RECOVERY_CAPSULE=/absolute/path/to/recovery/boot.bin
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sy108-uboot-spl-artifacts
+          path: |
+            build/ci/spl/
+            build/ci/uboot/
+            build/ci/manifest.json
+            build/ci/toolchain.txt
+            build/ci/build-spl.log
+            build/ci/build-uboot.log
+          if-no-files-found: error
